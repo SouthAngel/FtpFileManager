@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal">
+    <ImageButton
+        android:id="@+id/foImageButton"
+        android:src="@drawable/ic_folder_black_24dp"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_weight="1"/>
+    <TextView
+        android:id="@+id/foTextView"
+        android:text="xxx"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <CheckBox
+        android:id="@+id/foCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="64dp"
+        android:layout_weight="1"/>
+</LinearLayout>

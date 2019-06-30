@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawerLayout"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="120dp">
+        <LinearLayout
+            android:background="#121212"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="68dp">
+            <ImageButton
+                android:id="@+id/dockButton"
+                android:layout_marginStart="32dp"
+                android:src="@drawable/ic_toys_black_24dp"
+                style="@style/TitleButtons" />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:src="@drawable/ic_file_upload_black_24dp"
+                style="@style/TitleButtons" />
+            <ImageButton
+                android:src="@drawable/ic_file_download_black_24dp"
+                style="@style/TitleButtons" />
+            <ImageButton
+                android:src="@drawable/ic_dehaze_black_24dp"
+                style="@style/TitleButtons"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"/>
+        </LinearLayout>
+        <ListView
+            android:id="@+id/filesListView"
+            android:background="#e6e6e6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_gravity="start"
+        android:background="#b3b3b3"
+        android:layout_width="200dp"
+        android:layout_height="match_parent"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <Button
+                android:text="New C"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</android.support.v4.widget.DrawerLayout>
