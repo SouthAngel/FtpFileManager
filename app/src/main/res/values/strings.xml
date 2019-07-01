@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">FtpFileManager</string>
+    <string name="file_item_height">42dp</string>
 </resources>

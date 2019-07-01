@@ -24,13 +24,23 @@
             <View
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:layout_weight="2"/>
+            <CheckBox
+                android:id="@+id/switchSelectAbleButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"/>
+
             <ImageButton
+                android:id="@+id/uploadButton"
                 android:src="@drawable/ic_file_upload_black_24dp"
                 style="@style/TitleButtons" />
+
             <ImageButton
+                android:id="@+id/downloadButton"
                 android:src="@drawable/ic_file_download_black_24dp"
                 style="@style/TitleButtons" />
+
             <ImageButton
                 android:src="@drawable/ic_dehaze_black_24dp"
                 style="@style/TitleButtons"
@@ -42,19 +52,18 @@
         <ListView
             android:id="@+id/filesListView"
             android:background="#e6e6e6"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_gravity="start"
-        android:background="#b3b3b3"
-        android:layout_width="200dp"
+        android:layout_width="280dp"
         android:layout_height="match_parent"
         android:visibility="visible">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <Button
@@ -62,7 +71,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <ListView
-                android:layout_width="wrap_content"
+                android:id="@+id/connectionsListView"
+                android:background="#b3b3b3"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
     </LinearLayout>

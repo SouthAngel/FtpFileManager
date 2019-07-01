@@ -3,20 +3,39 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal">
-    <ImageButton
-        android:id="@+id/foImageButton"
-        android:src="@drawable/ic_folder_black_24dp"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_weight="1"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+
+        android:layout_gravity="center_horizontal">
+        <ImageView
+            android:id="@+id/foImageView"
+            android:src="@drawable/ic_folder_black_24dp"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:focusable="false"/>
+        <ImageView
+            android:id="@+id/fosImageView"
+            android:src="@drawable/ic_sync_problem_black_24dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:focusable="false"
+            android:layout_gravity="bottom"/>
+    </LinearLayout>
     <TextView
         android:id="@+id/foTextView"
-        android:text="xxx"
+        android:focusable="false"
+        android:text="@string/app_name"
+        android:gravity="center_vertical"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_weight="1"/>
     <CheckBox
         android:id="@+id/foCheckBox"
         android:layout_width="wrap_content"
-        android:layout_height="64dp"
-        android:layout_weight="1"/>
+        android:layout_height="42dp"
+        android:focusable="false"
+        android:layout_weight="0.2"/>
 </LinearLayout>
