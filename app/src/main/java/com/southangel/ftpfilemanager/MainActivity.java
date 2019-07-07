@@ -10,18 +10,19 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import java.io.File;
@@ -30,7 +31,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    enum Mode{BROWSER, SELECT}
+    enum FileListSelectMode {BROWSER, SELECT}
+    enum NewEditConnectionMode{CREATE, EDIT}
 
     public interface FtpInfterface{
         boolean onUpload(String localPath, String ftpPath);
@@ -66,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     class FileListAdapter extends BaseAdapter{
-        public Mode mode = Mode.BROWSER;
+        public FileListSelectMode mode = FileListSelectMode.BROWSER;
 
         class Holder{
             ImageView image;
@@ -105,7 +107,8 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 h = (Holder) (convertView.getTag());
             }
-            h.checkBox.setVisibility(mode == Mode.SELECT ? View.VISIBLE : View.GONE);
+            h.checkBox.setVisibility(mode == FileListSelectMode.SELECT ? View.VISIBLE : View.GONE);
+            h.checkBox.setChecked(d.selected);
             h.text.setText(d.name);
             setStatus(h.status, d);
             return convertView;
@@ -163,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
                 convertView = LayoutInflater.from(context).inflate(R.layout.connections_item, parent, false);
                 h.image = convertView.findViewById(R.id.conImageView);
                 h.text = convertView.findViewById(R.id.conTextView);
-                h.button = convertView.findViewById(R.id.conButton);
+//                h.button = convertView.findViewById(R.id.conButton);
                 convertView.setTag(h);
             } else {
                 h = (Holder) (convertView.getTag());
@@ -173,22 +176,60 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    class DialogNewConnection{
+    class DialogNewEditConnection{
         AlertDialog.Builder builder;
         AlertDialog dialog;
+        NewEditConnectionMode mode = NewEditConnectionMode.CREATE;
+        public ConnectionData conData = new ConnectionData();
 
-        public DialogNewConnection() {
+        public DialogNewEditConnection(Context context) {
             builder = new AlertDialog.Builder(context);
             builder.setView(R.layout.create_connection_dialog);
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int which) {
+                    EditText tx;
+                    tx = dialog.findViewById(R.id.newDialogName);
+                    conData.name = tx.getText().toString();
+                    tx = dialog.findViewById(R.id.newDialogHost);
+                    conData.host = tx.getText().toString();
+                    tx = dialog.findViewById(R.id.newDialogPort);
+                    conData.port = Integer.parseInt(tx.getText().toString());
+                    tx = dialog.findViewById(R.id.newDialogPassword);
+                    conData.password = tx.getText().toString();
+                    conListAdapter.notifyDataSetChanged();
+                if (mode == NewEditConnectionMode.CREATE) conListView.smoothScrollToPosition(conListArray.size()-1);
+                    System.out.println("OK");
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    System.out.println("cancel");
+                }
+            });
             dialog = builder.create();
-            dialog.show();
         }
+
+        public void show(){
+            dialog.show();
+            EditText tx;
+            tx = dialog.findViewById(R.id.newDialogName);
+            tx.setText(conData.name);
+            tx = dialog.findViewById(R.id.newDialogHost);
+            tx.setText(conData.host);
+            tx = dialog.findViewById(R.id.newDialogPort);
+            tx.setText(String.valueOf(conData.port));
+            tx = dialog.findViewById(R.id.newDialogPassword);
+            tx.setText(conData.password);
+            }
     }
 
     private Context context = this;
     private ImageButton listConnectionsButton;
     private ImageButton newConnectionButton;
     private ImageButton[] upDownButton = {null, null};
+    private ImageButton returnParentButton;
     private UILink uiLink = new Test.UILink();
     private ListView filesListView;
     private List<FileData> filesListArray = new ArrayList<>();
@@ -197,15 +238,21 @@ public class MainActivity extends AppCompatActivity {
     private List<ConnectionData> conListArray = new ArrayList<>();
     private ConListAdapter conListAdapter = new ConListAdapter();
     private CheckBox switchSelectAbleButton;
-    private AlertDialog createConDialog;
+    private DialogNewEditConnection connectionDialog;
+    private Object temp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        init();
         matchId();
         bindListener();
         test();
+    }
+
+    private void init(){
+        connectionDialog = new DialogNewEditConnection(context);
     }
 
     private void matchId(){
@@ -216,6 +263,7 @@ public class MainActivity extends AppCompatActivity {
         switchSelectAbleButton = findViewById(R.id.switchSelectAbleButton);
         upDownButton[0] = findViewById(R.id.uploadButton);
         upDownButton[1] = findViewById(R.id.downloadButton);
+        returnParentButton = findViewById(R.id.returnParentButton);
     }
 
     private void bindListener(){
@@ -229,43 +277,95 @@ public class MainActivity extends AppCompatActivity {
         switchSelectAbleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                filesListAdapter.mode = b ? Mode.SELECT : Mode.BROWSER;
+                filesListAdapter.mode = b ? FileListSelectMode.SELECT : FileListSelectMode.BROWSER;
+                if (filesListAdapter.mode == FileListSelectMode.SELECT) {
+                    for (FileData fileData : filesListArray) {
+                        fileData.selected = false;
+                    }
+                }
                 filesListAdapter.notifyDataSetChanged();
             }
         });
         newConnectionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                createNewConnection();
+                connectionDialog.mode = NewEditConnectionMode.CREATE;
+                ConnectionData data = new ConnectionData();
+                conListArray.add(data);
+                connectionDialog.conData = data;
+                connectionDialog.show();
             }
         });
-    }
-
-    private void createNewConnection(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setView(R.layout.create_connection_dialog);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        upDownButton[0].setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                Log.d("dialog clicked OK", dialogInterface.toString());
-                ConnectionData d = new ConnectionData();
-                d.name = String.valueOf(((EditText) createConDialog.findViewById(R.id.newDialogName)).getText());
-                d.host = String.valueOf(((EditText) createConDialog.findViewById(R.id.newDialogHost)).getText());
-                d.port = Integer.parseInt(((EditText) createConDialog.findViewById(R.id.newDialogPort)).getText().toString());
-                d.user = String.valueOf(((EditText) createConDialog.findViewById(R.id.newDialogUserName)).getText());
-                d.password = String.valueOf(((EditText) createConDialog.findViewById(R.id.newDialogPassword)).getText());
-                conListArray.add(d);
-                conListAdapter.notifyDataSetChanged();
-                Log.d("ok", d.host);
-            }
-        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                Log.d("dialog clicked Cancel", dialogInterface.toString());
+            public void onClick(View v) {
+                Log.d("upload", "click");
             }
         });
-        createConDialog = builder.create();
-        createConDialog.show();
+        upDownButton[1].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("download", "click");
+            }
+        });
+        returnParentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("click", "return parent");
+            }
+        });
+        filesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.d("item", "click");
+                if (filesListAdapter.mode == FileListSelectMode.SELECT) {
+                    FileData d = filesListArray.get(i);
+                    d.selected = !d.selected;
+                    filesListAdapter.notifyDataSetChanged();
+                }
+            }
+        });
+        filesListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.d("item", "long click");
+                filesListArray.get(i).selected = false;
+                switchSelectAbleButton.setChecked(true);
+                return false;
+            }
+        });
+        conListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("click", "connections");
+            }
+        });
+        conListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("LongClick", "connections");
+                System.out.println(position);
+                System.out.println(id);
+                PopupMenu pm = new PopupMenu(context, view);
+                Menu m = pm.getMenu();
+                MenuItem tm;
+                tm = m.add("set");
+                connectionDialog.mode = NewEditConnectionMode.EDIT;
+                connectionDialog.conData = conListArray.get(position);
+                tm.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        connectionDialog.show();
+                        return false;
+                    }
+                });
+                tm = m.add("sortHome");
+                tm = m.add("sortEnd");
+                tm = m.add("delete");
+                pm.show();
+                return false;
+            }
+        });
     }
 
     private void test(){
@@ -274,23 +374,6 @@ public class MainActivity extends AppCompatActivity {
         uiLink.onListConnections(conListArray);
         filesListView.setAdapter(filesListAdapter);
         conListView.setAdapter(conListAdapter);
-        filesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.d("item", "click");
-                Log.d("item", String.valueOf(i));
-                Log.d("item", String.valueOf(l));
-            }
-        });
-        filesListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.d("item", "long click");
-                Log.d("item", String.valueOf(i));
-                Log.d("item", String.valueOf(l));
-                return false;
-            }
-        });
     }
 }
 

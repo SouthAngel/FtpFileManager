@@ -22,10 +22,6 @@ public class Ftp{
     public String userPassword = "1231";
     FtpClient ftp;
 
-    public Ftp() {
-        this.ftp = FtpClient.create();
-    }
-
     public int checkConnect() throws IOException, FtpProtocolException {
         if (ftp.isConnected()) return 1;
         ftp.connect(new InetSocketAddress(ip, port));

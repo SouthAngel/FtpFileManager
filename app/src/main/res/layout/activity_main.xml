@@ -49,11 +49,21 @@
                 android:layout_marginStart="12dp"
                 android:layout_marginEnd="12dp"/>
         </LinearLayout>
-        <ListView
-            android:id="@+id/filesListView"
-            android:background="#e6e6e6"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content">
+            <ListView
+                android:id="@+id/filesListView"
+                android:background="#e6e6e6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <ImageButton
+                android:id="@+id/returnParentButton"
+                android:layout_width="62dp"
+                android:layout_height="62dp"
+                android:src="@drawable/ic_keyboard_return_black_24dp"
+                android:backgroundTint="#424242"/>
+        </RelativeLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -73,7 +83,7 @@
                 android:layout_height="42dp" />
             <ListView
                 android:id="@+id/connectionsListView"
-                android:background="#b3b3b3"
+                android:background="#d3d3d3"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"/>

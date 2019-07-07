@@ -26,7 +26,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.7"
-     inkscape:cx="253.04566"
+     inkscape:cx="256.61709"
      inkscape:cy="585.63667"
      inkscape:document-units="mm"
      inkscape:current-layer="layer5"
@@ -124,6 +124,19 @@
   </g>
   <g
      inkscape:groupmode="layer"
+     id="layer5"
+     inkscape:label="DockView">
+    <rect
+       style="opacity:1;vector-effect:none;fill:#b3b3b3;fill-opacity:1;stroke:#000000;stroke-width:1.02887571;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:6.17325401, 6.17325401;stroke-dashoffset:0;stroke-opacity:0.55191255"
+       id="rect4641"
+       width="32.250229"
+       height="249.01964"
+       x="3.4351285"
+       y="10.616673"
+       ry="2.8150063" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
      id="layer3"
      inkscape:label="Title">
     <rect
@@ -182,19 +195,6 @@
        x="87.3125"
        y="24.946428"
        ry="2.4568467" />
-  </g>
-  <g
-     inkscape:groupmode="layer"
-     id="layer5"
-     inkscape:label="DockView">
-    <rect
-       style="opacity:1;vector-effect:none;fill:#b3b3b3;fill-opacity:1;stroke:#000000;stroke-width:1.02887571;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:6.17325401, 6.17325401;stroke-dashoffset:0;stroke-opacity:0.55191255"
-       id="rect4641"
-       width="32.250229"
-       height="249.01964"
-       x="3.4351285"
-       y="10.616673"
-       ry="2.8150063" />
   </g>
   <g
      inkscape:groupmode="layer"
