@@ -3,6 +3,7 @@ package com.southangel.ftplib;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,17 +11,41 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.crypto.Data;
+
 import sun.net.ftp.FtpClient;
+import sun.net.ftp.FtpDirEntry;
 import sun.net.ftp.FtpProtocolException;
 
 public class Ftp{
+    public enum FileType{
+        FILE, DIR
+    }
+    class FileInfo{
+        String name;
+        String path;
+        FileType type = FileType.FILE;
+        Date data;
+        Long size;
+    }
+
     public String ip = "127.0.0.1";
     public int port = 21;
     public String userName = "user1";
     public String userPassword = "1231";
     FtpClient ftp;
+
+    public Ftp(){
+        initialize();
+    }
+
+    private void initialize(){
+        ftp = FtpClient.create();
+    }
 
     public int checkConnect() throws IOException, FtpProtocolException {
         if (ftp.isConnected()) return 1;
@@ -48,6 +73,30 @@ public class Ftp{
 
     public List<String> list() throws IOException, FtpProtocolException {
         return list("");
+    }
+
+    public List<FileInfo> listFiles(String path) throws IOException, FtpProtocolException {
+        List<FileInfo> files = new ArrayList<>();
+        Iterator<FtpDirEntry> itf = ftp.listFiles(path);
+        while (itf.hasNext()){
+            FtpDirEntry fde = itf.next();
+            FileInfo f = new FileInfo();
+            f.name = fde.getName();
+            f.data = fde.getLastModified();
+            f.size = fde.getSize();
+            FtpDirEntry.Type type = fde.getType();
+            if (type == FtpDirEntry.Type.FILE || type == FtpDirEntry.Type.LINK){
+                f.type = FileType.FILE;
+            } else {
+                f.type = FileType.DIR;
+            }
+            files.add(f);
+        }
+        return files;
+    }
+
+    public List<FileInfo> listFiles() throws IOException, FtpProtocolException {
+        return listFiles("");
     }
 
     public int download(String path1, String path2) throws IOException,FtpProtocolException{
@@ -80,7 +129,10 @@ class Test{
         for (String s : ft.list()) {
             System.out.println(s);
         }
-        System.out.println(ft.upload("a2.jpg", "a3.jpg"));
+        for (Ftp.FileInfo file : ft.listFiles()) {
+            System.out.println(file.data);
+        }
+//        System.out.println(ft.upload("a2.jpg", "a3.jpg"));
         System.out.println("Test end");
 
     }

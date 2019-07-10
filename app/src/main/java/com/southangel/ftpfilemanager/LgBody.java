@@ -39,4 +39,8 @@ public class LgBody {
     private String parent = ".";
     private MainActivity.UILink uiLink;
     private Ftp ftp;
+
+    public LgBody() {
+        this.ftp = new Ftp();
+    }
 }
